@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ปฏิทินกะทีมแอดมิน — กันยายน 2026</title>
+<style>
+  :root{
+    --ink:#1c2b2a;
+    --paper:#f7f0df;
+    --card:#ffffff;
+    --line:#dcd5c4;
+    --accent:#c1542c;
+    --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+
+    /* person colors */
+    --feeda:#ffdfb8;    --feeda-ink:#8a4a05;   --feeda-strong:#f0932b;
+    --grace:#d1f0d4;    --grace-ink:#145c2a;   --grace-strong:#4caf50;
+    --may:#cfe0fc;      --may-ink:#0f3d80;     --may-strong:#3b7dd8;
+    --pam:#e6d1fa;      --pam-ink:#5b1a8a;     --pam-strong:#9b4fd9;
+    --koi:#ffd6d1;      --koi-ink:#8a1f14;     --koi-strong:#e8543f;
+    --newadmin:#dde2ea;  --newadmin-ink:#33475c; --newadmin-strong:#5d7691;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Noto Sans Thai","Sarabun",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    padding:32px 20px 60px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:6px;
+  }
+  h1{font-size:28px;margin:0 0 6px;font-weight:800;letter-spacing:-0.01em;}
+  .sub{color:#5c6663;font-size:14px;line-height:1.6;max-width:820px;}
+  .legend{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 4px;}
+  .chip{
+    display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;
+    padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);
+  }
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+  .note-box{
+    margin:14px 0 20px;
+    background:#fdf3ef;
+    border:1px solid #e7c6ba;
+    border-left:4px solid var(--accent);
+    padding:13px 16px;
+    font-size:13px;
+    line-height:1.75;
+    border-radius:4px;
+    color:var(--ink);
+  }
+  .note-box b{color:#802424;}
+  /* ---- calendar grid ---- */
+  .cal-shell{
+    margin-top:18px;background:var(--card);border-radius:12px;
+    box-shadow:0 1px 3px rgba(28,43,42,.07);border:1px solid var(--line);
+  }
+  .cal-scroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    border-radius:12px;
+  }
+  .cal-inner{min-width:700px;}
+  .scroll-hint{
+    display:none;
+    font-size:11.5px;color:#5c6663;padding:8px 12px 0;
+  }
+  .cal-head{display:grid;grid-template-columns:repeat(7,1fr);background:#802424;}
+  .cal-head div{
+    color:#f2ede0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    padding:10px 0;text-align:center;font-weight:600;
+  }
+  .cal-head div.weekend{color:#ffe9e4;background:#5c1414;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(165px,auto);}
+  .cell{
+    border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:6px 6px 8px;position:relative;background:var(--card);
+  }
+  .cell:nth-child(7n){border-right:none;}
+  .cell.pad{background:#faf8f2;}
+  .cell.weekend-col{background:#f3c3bd;}
+  .cell.pad.weekend-col{background:#ecb3ac;}
+  .datenum{font-family:var(--mono);font-weight:700;font-size:13px;color:#33413f;margin-bottom:5px;display:block;}
+  .cell.pad .datenum{color:#c4bda9;}
+
+  .shiftline{
+    display:flex;align-items:center;gap:4px;
+    font-size:10.5px;line-height:1.3;font-weight:600;
+    border-radius:4px;padding:2px 5px;margin-bottom:2px;
+  }
+  .shiftline .tag{font-family:var(--mono);font-weight:700;opacity:.65;}
+  .shiftline[data-person="ฟีดา"]{background:var(--feeda);color:var(--feeda-ink);}
+  .shiftline[data-person="เกรส"]{background:var(--grace);color:var(--grace-ink);}
+  .shiftline[data-person="เมย์"]{background:var(--may);color:var(--may-ink);}
+  .shiftline[data-person="ปาม"]{background:var(--pam);color:var(--pam-ink);}
+  .shiftline[data-person="ก้อย"]{background:var(--koi);color:var(--koi-ink);}
+  .shiftline[data-person="แอดมินใหม่"]{background:var(--newadmin);color:var(--newadmin-ink);}
+
+  .offline{
+    display:flex;align-items:center;gap:4px;
+    font-size:10.5px;font-weight:700;
+    border-radius:4px;padding:2px 5px;margin-top:3px;min-height:16px;
+    border:1.5px dashed transparent;background:transparent;
+  }
+  .offline .tag{font-family:var(--mono);opacity:.6;font-weight:700;}
+  .offline[data-person="ฟีดา"]{border-color:var(--feeda-strong);color:var(--feeda-ink);background:#fff2dd;}
+  .offline[data-person="เกรส"]{border-color:var(--grace-strong);color:var(--grace-ink);background:#e6f7e7;}
+  .offline[data-person="เมย์"]{border-color:var(--may-strong);color:var(--may-ink);background:#e5f0fd;}
+  .offline[data-person="ปาม"]{border-color:var(--pam-strong);color:var(--pam-ink);background:#f2e6fc;}
+  .offline[data-person="ก้อย"]{border-color:var(--koi-strong);color:var(--koi-ink);background:#ffe9e6;}
+  .offline[data-person="แอดมินใหม่"]{border-color:var(--newadmin-strong);color:var(--newadmin-ink);background:#e9edf2;}
+
+  .section-title{margin:46px 0 4px;font-size:19px;font-weight:800;}
+  .section-sub{color:#5c6663;font-size:13px;margin-bottom:14px;}
+  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:12px;}
+  .person-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;border-top:4px solid var(--card-color,#ccc);}
+  .person-card h3{margin:0 0 2px;font-size:16px;}
+  .person-card .role{font-size:11.5px;color:#5c6663;margin-bottom:10px;}
+  .stat-row{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-top:1px dashed var(--line);}
+  .stat-row:first-of-type{border-top:none;}
+  .stat-row .n{font-family:var(--mono);font-weight:700;}
+  .total-row{display:flex;justify-content:space-between;margin-top:9px;padding-top:9px;border-top:1px solid var(--ink);font-weight:700;font-size:13px;}
+  .offdays{margin-top:9px;font-size:11px;color:#5c6663;line-height:1.6;word-break:break-word;}
+  footer{margin-top:36px;font-size:11px;color:#8a9490;font-family:var(--mono);}
+
+  @media (max-width:820px){
+    .scroll-hint{display:block;}
+    .cal-grid{grid-auto-rows:minmax(150px,auto);}
+    .shiftline,.offline{font-size:9px;}
+    .datenum{font-size:11px;}
+    .cal-head div{font-size:10px;}
+    h1{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Longevity Hub · Ops · Admin Shift Plan</div>
+  <h1>ปฏิทินกะทีมแอดมิน — กันยายน 2026</h1>
+  <p class="sub">
+    6 คน (ฟีดา · เกรส · เมย์ · ปาม · ก้อย · แอดมินใหม่) ทำงานคนละ 6 วัน/สัปดาห์ หยุดคนละ 1 วัน/สัปดาห์ ตามเงื่อนไขที่กำหนด
+    และอ้างอิงความหนาแน่นแชทจาก Heatmap ทีม — แต่ละคนมี<b>สีประจำตัว</b>คงที่ทุกกะและทุกวัน
+    (ช่องหยุดของแต่ละคนก็ใช้สีเดียวกัน แต่เป็นกรอบประเปรียบเพื่อให้รู้ว่าเป็นวันหยุดไม่ใช่วันเข้ากะ)
+  </p>
+
+  <div class="legend">
+    <span class="chip"><span class="dot" style="background:var(--feeda-strong)"></span>ฟีดา</span>
+    <span class="chip"><span class="dot" style="background:var(--grace-strong)"></span>เกรส</span>
+    <span class="chip"><span class="dot" style="background:var(--may-strong)"></span>เมย์</span>
+    <span class="chip"><span class="dot" style="background:var(--pam-strong)"></span>ปาม</span>
+    <span class="chip"><span class="dot" style="background:var(--koi-strong)"></span>ก้อย</span>
+    <span class="chip"><span class="dot" style="background:var(--newadmin-strong)"></span>แอดมินใหม่</span>
+  </div>
+  <p class="section-sub" style="margin-top:8px;"><b>1-15 ก.ย.:</b> ฟีดา 09.00 / เกรส 08.00 / ก้อย 12.00 / ปาม 15.00 / เมย์ 16.00 (สลับกะกันชั่วคราว)</p>
+  <p class="section-sub"><b>16-30 ก.ย. (สลับกะรอบสอง):</b> ฟีดา 12.00 / ปาม 08.00 / ก้อย 16.00 / เกรส 09.00 / เมย์ 15.00 — วันหยุดของแต่ละคนยังเหมือนเดิมทั้งเดือน (ฟีดา=อาทิตย์ / ปาม=พฤหัส / เกรส=พุธ / ก้อย=อังคาร / เมย์=เสาร์)</p>
+  <p class="section-sub"><b>แอดมินใหม่:</b> เข้ากะ 10.00-22.00 ทุกวัน ยกเว้นวันจันทร์หยุด (คงที่ตลอดเดือน ไม่มีข้อยกเว้นแล้ว)<br><b>ปามลาผ่าตัด 16-23 ก.ย.:</b> ลบปามออกจากตารางช่วงนี้ทั้งหมด — <b style="color:#1f6b43;">✓ กะ 08.00-16.00 มีคนคัฟครบทุกวันแล้ว</b> (16 ฟีดา / 17-22,24 เกรส / 23 เกรส)<br><b style="color:#1f6b43;">✓ กะ 16.00-24.00 วันอังคารที่ก้อยหยุด (22, 29 ก.ย.):</b> เมย์ขยับมาคุมแทนแล้ว<br><b>สัปดาห์ 23-25 ก.ย. เกรสสลับวันหยุด:</b> ปกติเกรสหยุดพุธ (23 ก.ย.) แต่สัปดาห์นี้สลับให้เข้างาน 08.00 วันที่ 23 แทน แล้วไปหยุดวันศุกร์ที่ 25 ก.ย. แทน (สัปดาห์อื่นเกรสยังหยุดพุธตามปกติ)</p>
+  <div class="cal-shell">
+    <p class="scroll-hint">⇔ เลื่อนซ้าย-ขวาเพื่อดูตารางแบบเต็ม</p>
+    <div class="cal-scroll">
+      <div class="cal-inner">
+        <div class="cal-head" id="cal-head"></div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">สรุปรายบุคคล — กันยายน 2026</h2>
+  <p class="section-sub">จำนวนวันเข้ากะแต่ละประเภทตลอดทั้งเดือน</p>
+  <div class="summary-grid" id="summary"></div>
+
+  <footer>generated for LGH admin ops · สำหรับดูอย่างเดียว (view-only) · หากต้องแก้ไขตาราง ติดต่อผู้จัดตาราง</footer>
+</div>
+
+<script>
+const DOW_HEAD = ["จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์","อาทิตย์"];
+
+// [date, weekday(0=Mon..6=Sun), {shift:name}, offName]
+const days = [
+  [1,1,{"09":"ฟีดา","15":"ปาม","08":"เกรส","16":"เมย์","10":"แอดมินใหม่"},["ก้อย"]],
+  [2,2,{"15":"ปาม","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่","08":"ฟีดา"},["เกรส"]],
+  [3,3,{"09":"ฟีดา","08":"เกรส","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่"},["ปาม"]],
+  [4,4,{"09":"ฟีดา","15":"ปาม","08":"เกรส","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่"},[]],
+  [5,5,{"09":"ฟีดา","08":"เกรส","12":"ก้อย","10":"แอดมินใหม่","16":"ปาม"},["เมย์"]],
+  [6,6,{"15":"ปาม","08":"เกรส","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่"},["ฟีดา"]],
+  [7,0,{"09":"ฟีดา","15":"ปาม","08":"เกรส","12":"ก้อย","16":"เมย์"},["แอดมินใหม่"]],
+  [8,1,{"09":"ฟีดา","15":"ปาม","08":"เกรส","16":"เมย์","10":"แอดมินใหม่"},["ก้อย"]],
+  [9,2,{"15":"ปาม","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่","08":"ฟีดา"},["เกรส"]],
+  [10,3,{"09":"ฟีดา","08":"เกรส","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่"},["ปาม"]],
+  [11,4,{"09":"ฟีดา","15":"ปาม","08":"เกรส","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่"},[]],
+  [12,5,{"09":"ฟีดา","08":"เกรส","12":"ก้อย","10":"แอดมินใหม่","16":"ปาม"},["เมย์"]],
+  [13,6,{"15":"ปาม","08":"เกรส","12":"ก้อย","16":"เมย์","10":"แอดมินใหม่"},["ฟีดา"]],
+  [14,0,{"09":"ฟีดา","15":"ปาม","08":"เกรส","12":"ก้อย","16":"เมย์"},["แอดมินใหม่"]],
+  [15,1,{"09":"ฟีดา","15":"ปาม","08":"เกรส","16":"เมย์","10":"แอดมินใหม่"},["ก้อย"]],
+  [16,2,{"16":"ก้อย","15":"เมย์","10":"แอดมินใหม่","08":"ฟีดา"},["เกรส"]],
+  [17,3,{"12":"ฟีดา","16":"ก้อย","15":"เมย์","10":"แอดมินใหม่","08":"เกรส"},["ปาม"]],
+  [18,4,{"12":"ฟีดา","16":"ก้อย","15":"เมย์","10":"แอดมินใหม่","08":"เกรส"},[]],
+  [19,5,{"12":"ฟีดา","16":"ก้อย","10":"แอดมินใหม่","08":"เกรส"},["เมย์"]],
+  [20,6,{"16":"ก้อย","15":"เมย์","10":"แอดมินใหม่","08":"เกรส"},["ฟีดา"]],
+  [21,0,{"12":"ฟีดา","16":"ก้อย","15":"เมย์","08":"เกรส"},["แอดมินใหม่"]],
+  [22,1,{"12":"ฟีดา","10":"แอดมินใหม่","08":"เกรส","16":"เมย์"},["ก้อย"]],
+  [23,2,{"12":"ฟีดา","16":"ก้อย","15":"เมย์","08":"เกรส","10":"แอดมินใหม่"},[]],
+  [24,3,{"12":"ฟีดา","16":"ก้อย","15":"เมย์","10":"แอดมินใหม่","08":"เกรส"},["ปาม"]],
+  [25,4,{"12":"ฟีดา","08":"ปาม","16":"ก้อย","15":"เมย์","10":"แอดมินใหม่"},["เกรส"]],
+  [26,5,{"12":"ฟีดา","08":"ปาม","09":"เกรส","16":"ก้อย","10":"แอดมินใหม่"},["เมย์"]],
+  [27,6,{"08":"ปาม","09":"เกรส","16":"ก้อย","15":"เมย์","10":"แอดมินใหม่"},["ฟีดา"]],
+  [28,0,{"12":"ฟีดา","08":"ปาม","09":"เกรส","16":"ก้อย","15":"เมย์"},["แอดมินใหม่"]],
+  [29,1,{"12":"ฟีดา","08":"ปาม","09":"เกรส","10":"แอดมินใหม่","16":"เมย์"},["ก้อย"]],
+  [30,2,{"12":"ฟีดา","08":"ปาม","16":"ก้อย","15":"เมย์","10":"แอดมินใหม่"},["เกรส"]],
+];
+
+// ---- header row ----
+const headEl = document.getElementById("cal-head");
+DOW_HEAD.forEach((d,i)=>{
+  const div = document.createElement("div");
+  if(i>=5) div.classList.add("weekend");
+  div.textContent = d;
+  headEl.appendChild(div);
+});
+
+// ---- grid cells (Aug 1 2026 is a Saturday => weekday index 5, Mon=0) ----
+const FIRST_WEEKDAY = 1; // Sep 1 2026 = Tuesday
+const DAYS_IN_MONTH = 30;
+const gridEl = document.getElementById("cal-grid");
+const totalCells = Math.ceil((FIRST_WEEKDAY + DAYS_IN_MONTH) / 7) * 7;
+
+const byDate = {};
+days.forEach(d => byDate[d[0]] = d);
+
+const shiftLabel = {"08":"08.00-16.00","09":"09.00-17.00","10":"10.00-22.00","11":"11.00-19.00","12":"12.00-20.00","15":"15.00-23.00","16":"16.00-24.00"};
+
+for(let i=0;i<totalCells;i++){
+  const dayNum = i - FIRST_WEEKDAY + 1;
+  const col = i % 7;
+  const cell = document.createElement("div");
+  cell.className = "cell";
+  if(col>=5) cell.classList.add("weekend-col");
+
+  if(dayNum < 1 || dayNum > DAYS_IN_MONTH){
+    cell.classList.add("pad");
+    const dn = document.createElement("span");
+    dn.className = "datenum";
+    if(dayNum < 1) dn.textContent = 31 + dayNum;
+    else dn.textContent = dayNum - DAYS_IN_MONTH;
+    cell.appendChild(dn);
+  } else {
+    const [ , , shifts, off ] = byDate[dayNum];
+    const dn = document.createElement("span");
+    dn.className = "datenum";
+    dn.textContent = dayNum;
+    cell.appendChild(dn);
+
+    ["08","09","10","11","12","15","16"].forEach(s=>{
+      if(shifts[s]){
+        const people_here = Array.isArray(shifts[s]) ? shifts[s] : [shifts[s]];
+        people_here.forEach(person=>{
+          const line = document.createElement("div");
+          line.className = "shiftline";
+          line.setAttribute("data-person", person);
+          line.innerHTML = `<span class="tag">${shiftLabel[s]}</span><span class="name">${person}</span>`;
+          cell.appendChild(line);
+        });
+      }
+    });
+
+    off.forEach(person=>{
+      const offLine = document.createElement("div");
+      offLine.className = "offline";
+      offLine.setAttribute("data-person", person);
+      offLine.innerHTML = `<span class="tag">หยุด</span><span class="name">${person}</span>`;
+      cell.appendChild(offLine);
+    });
+  }
+  gridEl.appendChild(cell);
+}
+
+// ---- summary ----
+const people = {
+  "ฟีดา": {role:"1-15 ก.ย. เข้า 09.00-17.00 (ยกเว้น 2,9 ขยับเป็น 08.00) · 16-30 ก.ย. เข้า 12.00-20.00 (ยกเว้น 16 ขยับเป็น 08.00) · หยุดวันอาทิตย์", counts:{"08":0,"09":0,"10":0,"11":0,"12":0,"15":0,"16":0}, off:[], color:"var(--feeda-strong)"},
+  "เมย์": {role:"1-15 ก.ย. เข้า 16.00-24.00 ทุกวันทำงาน · 16-30 ก.ย. เข้า 15.00-23.00 ทุกวันทำงาน (ยกเว้น 22,29 ขยับเป็น 16.00 คัฟวันอังคารที่ก้อยหยุด) · หยุดวันเสาร์", counts:{"08":0,"09":0,"10":0,"11":0,"12":0,"15":0,"16":0}, off:[], color:"var(--may-strong)"},
+  "เกรส": {role:"1-15 ก.ย. เข้า 08.00-16.00 · 16-30 ก.ย. เข้า 09.00-17.00 (ยกเว้น 17-22,24 ขยับเป็น 08.00 คัฟช่วงปามลา) · หยุดวันพุธตามปกติ ยกเว้นสัปดาห์นี้สลับ: 23 ก.ย. เข้างาน 08.00 แทน / 25 ก.ย. หยุดแทน", counts:{"08":0,"09":0,"10":0,"11":0,"12":0,"15":0,"16":0}, off:[], color:"var(--grace-strong)"},
+  "ปาม": {role:"1-15 ก.ย. เข้า 15.00-23.00 ทุกวันทำงาน (ยกเว้น 5,12 ขยับเป็น 16.00) · 16-30 ก.ย. เข้า 08.00-16.00 ทุกวันทำงาน · ลาผ่าตัด 16-23 ก.ย. (ไม่เข้างานช่วงนี้) · หยุดวันพฤหัส", counts:{"08":0,"09":0,"10":0,"11":0,"12":0,"15":0,"16":0}, off:[], color:"var(--pam-strong)"},
+  "ก้อย": {role:"1-15 ก.ย. เข้า 12.00-20.00 (ไม่เปลี่ยนจากปกติ) · 16-30 ก.ย. เข้า 16.00-24.00 ทุกวันทำงาน · หยุดวันอังคาร", counts:{"08":0,"09":0,"10":0,"11":0,"12":0,"15":0,"16":0}, off:[], color:"var(--koi-strong)"},
+  "แอดมินใหม่": {role:"เข้ากะ 10.00-22.00 ทุกวัน · หยุดวันจันทร์", counts:{"08":0,"09":0,"10":0,"11":0,"12":0,"15":0,"16":0}, off:[], color:"var(--newadmin-strong)"},
+};
+days.forEach(([date, dowIdx, shifts, off])=>{
+  ["08","09","10","11","12","15","16"].forEach(s=>{
+    const names = shifts[s] ? (Array.isArray(shifts[s]) ? shifts[s] : [shifts[s]]) : [];
+    names.forEach(name=>{ if(people[name]) people[name].counts[s]++; });
+  });
+  off.forEach(o=>{ if(people[o]) people[o].off.push(date+" "+["จ","อ","พ","พฤ","ศ","ส","อา"][dowIdx]); });
+});
+const fullShiftLabel = {"08":"08.00-16.00 เช้า","09":"09.00-17.00 สาย","10":"10.00-22.00 ยาว","11":"11.00-19.00 สาย2","12":"12.00-20.00 บ่าย","15":"15.00-23.00 บ่าย2","16":"16.00-24.00 ดึก"};
+const summaryEl = document.getElementById("summary");
+Object.entries(people).forEach(([name,data])=>{
+  const total = Object.values(data.counts).reduce((a,b)=>a+b,0);
+  const card = document.createElement("div");
+  card.className = "person-card";
+  card.style.setProperty("--card-color", data.color);
+  card.innerHTML = `
+    <h3>${name}</h3>
+    <div class="role">${data.role}</div>
+    ${["08","09","10","11","12","15","16"].map(s=>`
+      <div class="stat-row"><span>${fullShiftLabel[s]}</span><span class="n">${data.counts[s]} วัน</span></div>
+    `).join("")}
+  `;
+  summaryEl.appendChild(card);
+});
+</script>
+</body>
+</html>
